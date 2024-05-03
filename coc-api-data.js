@@ -96,7 +96,11 @@ async function getClanWarStatus() {
         })
 
         let msgText = "Стадия войны: " + clanWarResponse.data.state + "\n";
-        msgText += "Участников: " + clanWarResponse.data.clan.members.length + "\n";
+        const warMembers = clanWarResponse.data.clan.members;
+        if (!warMembers) {
+            return "Война не началась";
+        }
+        msgText += "Участников: " + warMembers.length + "\n";
 
         msgText += "Счет: " + clanWarResponse.data.clan.name + " " + clanWarResponse.data.clan.stars + " - " + clanWarResponse.data.opponent.stars + " " + clanWarResponse.data.opponent.name + "\n";
 
@@ -104,7 +108,6 @@ async function getClanWarStatus() {
             msgText += "Осталось времени: " + getTimeUntilEvent(clanWarResponse.data.endTime) + "\n\n";
         }
 
-        const warMembers = clanWarResponse.data.clan.members;
 
         for (const member of warMembers) {
             if (!member.attacks) {
