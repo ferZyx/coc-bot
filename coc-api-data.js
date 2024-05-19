@@ -2,25 +2,21 @@ const axios = require('axios');
 const dotenv = require('dotenv');
 dotenv.config();
 
-function combineStrings(strings, maxLength = 120) {
+function combineStringsByCount(strings, count = 5) {
     let combined = [];
-    let currentString = "";
+    let tempArray = [];
 
-    strings.forEach(string => {
-        if ((currentString.length + string.length + 1) <= maxLength) {
-            if (currentString) {
-                currentString += " " + string;
-            } else {
-                currentString = string;
-            }
-        } else {
-            combined.push(currentString);
-            currentString = string;
+    strings.forEach((string, index) => {
+        tempArray.push(string);
+
+        if (tempArray.length === count) {
+            combined.push(tempArray.join(" "));
+            tempArray = [];
         }
     });
 
-    if (currentString) {
-        combined.push(currentString);
+    if (tempArray.length > 0) {
+        combined.push(tempArray.join(" "));
     }
 
     return combined;
@@ -106,7 +102,7 @@ async function getRaidSeasonStatus() {
                 playersWithoutFiveAttacks.push("@" + member)
             }
         }
-        const pingMassages = combineStrings(playersWithoutFiveAttacks)
+        const pingMassages = combineStringsByCount(playersWithoutFiveAttacks)
 
         msgText += "\nДля пинга: \n"
         pingMassages.forEach((value, index) => msgText+= `${index + 1}) <code>${value}</code>\n`)
