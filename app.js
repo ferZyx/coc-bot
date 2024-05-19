@@ -18,7 +18,7 @@ bot.onText(/\/start/, async (msg) => {
 
 bot.onText(/\/raid/, async (msg) => {
     const msgText = await getRaidSeasonStatus()
-    await bot.sendMessage(msg.chat.id, msgText);
+    await bot.sendMessage(msg.chat.id, msgText, {parse_mode:"HTML"});
 });
 
 bot.onText(/\/war/, async (msg) => {

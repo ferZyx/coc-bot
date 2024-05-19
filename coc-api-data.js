@@ -2,6 +2,32 @@ const axios = require('axios');
 const dotenv = require('dotenv');
 dotenv.config();
 
+function combineStrings(strings, maxLength = 120) {
+    let combined = [];
+    let currentString = "";
+
+    strings.forEach(string => {
+        if ((currentString.length + string.length + 1) <= maxLength) {
+            if (currentString) {
+                currentString += " " + string;
+            } else {
+                currentString = string;
+            }
+        } else {
+            combined.push(currentString);
+            currentString = string;
+        }
+    });
+
+    if (currentString) {
+        combined.push(currentString);
+    }
+
+    return combined;
+}
+
+
+
 function parseDateTime(dateTimeStr) {
     const year = parseInt(dateTimeStr.substr(0, 4));
     const month = parseInt(dateTimeStr.substr(4, 2)) - 1; // Месяцы в JavaScript начинаются с 0
@@ -72,12 +98,18 @@ async function getRaidSeasonStatus() {
         });
         let msgText = "Стадия рейда: " + clanRaidSeasonsReponse.data.items[0].state + "\n";
         msgText += "Лут рейда: " + clanRaidSeasonsReponse.data.items[0].capitalTotalLoot + "\n\n";
-        msgText += "Игроки, которые не сделали 6 атак в рейде: \n";
+        msgText += "Игроки, которые не сделали 5 атак в рейде: \n";
+        const playersWithoutFiveAttacks = []
         for (let member in membersAttacks) {
-            if (membersAttacks[member] < 6) {
+            if (membersAttacks[member] < 5) {
                 msgText += member + " - " + membersAttacks[member] + " атак\n";
+                playersWithoutFiveAttacks.push("@" + member)
             }
         }
+        const pingMassages = combineStrings(playersWithoutFiveAttacks)
+
+        msgText += "\nДля пинга: \n"
+        pingMassages.forEach((value, index) => msgText+= `${index + 1}) <code>${value}</code>\n`)
 
         return msgText;
 
