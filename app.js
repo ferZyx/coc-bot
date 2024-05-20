@@ -37,7 +37,7 @@ bot.startPolling().then(() => {
     cron.schedule('10 12 * * 1', async () => {
         const msgText = await getRaidSeasonStatus()
         const chatId = process.env.GROUP_CHAT_ID;
-        await bot.sendMessage(chatId, msgText);
+        await bot.sendMessage(chatId, msgText, {parse_mode:"HTML"});
     }, {
         scheduled: true,
     });
